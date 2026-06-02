@@ -2829,7 +2829,9 @@ function walletFlow(platform){
   }[platform];
   openModal(M.t, "<p>Tu tarjeta ya es funcional vía QR + contacto.</p><ol>"+M.steps.map(s=>"<li>"+s+"</li>").join("")+"</ol>");
 }
-
+$("wApple").onclick  = ()=>walletFlow("apple");
+$("wGoogle").onclick = ()=>walletFlow("google");
+$("wHuawei").onclick = ()=>walletFlow("huawei");
 
 function openModal(t,html){ $("mTitle").textContent=t; $("mBody").innerHTML=html; $("modalBg").classList.add("show"); }
 $("mClose").onclick=()=>$("modalBg").classList.remove("show");
