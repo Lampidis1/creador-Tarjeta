@@ -209,9 +209,8 @@
     <div class="swatches" id="swatches"></div>
 
     <div class="section-label">Logo de tu empresa (opcional)</div>
-    <label class="drop" id="drop">Haz clic para subir tu logo (PNG / JPG)
-      <input id="f_logo" type="file" accept="image/*" hidden />
-    </label>
+    <div class="drop" id="drop" role="button" tabindex="0">Haz clic para subir tu logo (PNG / JPG)</div>
+    <input id="f_logo" type="file" accept="image/*" style="display:none" />
     <div class="logo-prev" id="logoPrev" style="display:none"><img id="logoImg" alt="logo" /><button class="btn btn-ghost" style="width:auto;padding:8px 12px;font-size:12px" id="logoDel" type="button">Quitar</button></div>
 
     <button class="btn btn-primary" id="genBtn" type="button">Generar tarjeta →</button>
@@ -2677,11 +2676,12 @@ $("c_txt").oninput  = e=>$("c_txt_hex").value=e.target.value;
 $("c_bg_hex").oninput  = e=>{ if(/^#[0-9a-fA-F]{6}$/.test(e.target.value)) $("c_bg").value=e.target.value; };
 $("c_txt_hex").oninput = e=>{ if(/^#[0-9a-fA-F]{6}$/.test(e.target.value)) $("c_txt").value=e.target.value; };
 
-$("drop").onclick = ()=>$("f_logo").click();
+$("drop").onclick = ()=>{ $("f_logo").value=""; $("f_logo").click(); };
 $("f_logo").onchange = e=>{
-  const file=e.target.files[0]; if(!file) return;
+  const file = e.target.files && e.target.files[0]; if(!file) return;
   const r=new FileReader();
   r.onload=ev=>{ logoDataUrl=ev.target.result; $("logoImg").src=logoDataUrl; $("logoPrev").style.display="flex"; };
+  r.onerror=()=>alert("No se pudo leer la imagen. Intenta con otra (PNG o JPG).");
   r.readAsDataURL(file);
 };
 $("logoDel").onclick = ()=>{ logoDataUrl=null; $("logoPrev").style.display="none"; $("f_logo").value=""; };
