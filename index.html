@@ -2712,8 +2712,19 @@ function buildVCard(d){
     const t = (s.type==="x") ? "twitter" : s.type;
     L.push("X-SOCIALPROFILE;TYPE="+t+":"+socialUrl(s.type, s.value));
   });
-  const noteParts = d.custom.map(f=> (f.label? f.label+": " : "") + f.value).filter(Boolean);
-  L.push("NOTE:"+ noteParts.join("\\n"));
+  // Campos personalizados: dirección -> ADR; el resto -> NOTE
+  const _esc = v => v.replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g," ");
+  const noteParts = [];
+  (d.custom||[]).forEach(f=>{
+    if(!f.value) return;
+    const norm = (f.label||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    if(/direc|address|domicil/.test(norm)){
+      L.push("ADR;TYPE=WORK:;;"+_esc(f.value)+";;;;");
+    } else {
+      noteParts.push((f.label? f.label+": " : "") + f.value);
+    }
+  });
+  if(noteParts.length) L.push("NOTE:"+ noteParts.join("\\n"));
   L.push("END:VCARD");
   return L.join("\n");
 }
@@ -2744,14 +2755,9 @@ $("genBtn").onclick = ()=>{
   $("card_name").textContent = (d.nombre+" "+d.apellido).trim();
   $("card_cargo").textContent = d.cargo || "";
 
-  // campos personalizados en la tarjeta
-  const cf=$("card_custom"); cf.innerHTML="";
-  d.custom.slice(0,4).forEach(f=>{
-    const line=document.createElement("div"); line.className="cf-line";
-    if(f.label){ const b=document.createElement("b"); b.textContent=f.label+": "; line.appendChild(b); }
-    line.appendChild(document.createTextNode(f.value));
-    cf.appendChild(line);
-  });
+  // Los campos personalizados NO se muestran en la tarjeta:
+  // se guardan dentro del QR como NOTA o DIRECCIÓN del contacto.
+  $("card_custom").innerHTML="";
 
   // redes sociales como chips con ícono
   const sc=$("card_socials"); sc.innerHTML="";
