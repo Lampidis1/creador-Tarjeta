@@ -131,9 +131,9 @@
   /* tarjeta: campos personalizados y chips con ícono */
   .card-custom{margin-top:8px;display:flex;flex-direction:column;gap:2px}
   .card-custom .cf-line{font-size:11px;opacity:.85;line-height:1.35}
-  .card-socials .chip{display:inline-flex;align-items:center;gap:4px;line-height:1}
-  .card-socials .chip-ic{display:inline-flex}
-  .card-socials .chip-ic svg{display:block}
+  .card-socials{gap:8px}
+  .card-socials .chip{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:1px solid var(--cardaccent,#00C7D9);border-radius:9px;opacity:1}
+  .card-socials .chip svg{display:block}
 
 </style>
 </head>
@@ -2757,10 +2757,7 @@ $("genBtn").onclick = ()=>{
   const sc=$("card_socials"); sc.innerHTML="";
   d.socials.forEach(s=>{
     const chip=document.createElement("span"); chip.className="chip";
-    const ic=document.createElement("span"); ic.className="chip-ic"; ic.innerHTML=svgIcon(s.type,11);
-    const handle = s.value.replace(/^https?:\/\//,"").replace(/\/$/,"").replace(/^@/,"");
-    chip.appendChild(ic);
-    chip.appendChild(document.createTextNode(" "+(handle.length>22?handle.slice(0,22)+"…":handle)));
+    chip.innerHTML=svgIcon(s.type,16);   // solo el ícono, sin texto
     sc.appendChild(chip);
   });
 
